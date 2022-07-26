@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using la_mia_pizzeria_static.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace la_mia_pizzeria_static.Controllers
 {
+    [Authorize]
     public class PizzaController : Controller
     {
         // GET: HomeController1

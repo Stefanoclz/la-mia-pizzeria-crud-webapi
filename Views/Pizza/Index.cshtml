@@ -69,8 +69,8 @@
                                                     <p>${response.data[i].description}</p>
                                                     <p><strong>Prezzo: </strong>${response.data[i].prezzo} €</p>  
                                                          
-                                                    <p><a href="/Pizza/Details/${response.data[i].id}">Dettagli</a><p>
-                                                    <p><a href="/Pizza/Edit/${response.data[i].id}">Modifica</a></p>
+                                                    <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Details/${response.data[i].id}">Dettagli</a></button>
+                                                    <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Edit/${response.data[i].id}">Modifica</a></button>
                                                  </div>`
                         }
                     }

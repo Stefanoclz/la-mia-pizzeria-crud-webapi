@@ -1,10 +1,12 @@
 ﻿
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace la_mia_pizzeria_static
 {
-    public class PizzaContext : DbContext
+    public class PizzaContext : IdentityDbContext<IdentityUser>
     {
         public DbSet<Pizza> Pizza { get; set; }
 
@@ -12,6 +14,15 @@ namespace la_mia_pizzeria_static
 
         public DbSet<Category> Category { get; set; }
 
+        public PizzaContext()
+        {
+
+        }
+
+        public PizzaContext(DbContextOptions<PizzaContext> options) : base(options)
+        {
+
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=pizze-db;Integrated Security=True");
