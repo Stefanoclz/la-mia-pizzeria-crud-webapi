@@ -1,0 +1,66 @@
+﻿
+@model PizzaCategory;
+
+<div class="container">
+     <form asp-controller="Pizza" asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div class="mb-3">
+            <strong>Nome:</strong>
+            <input asp-for="@Model.Pizza.name" class="d-block w-100" />
+            <span asp-validation-for="@Model.Pizza.name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <strong>Descrizione:</strong>
+            <input asp-for="@Model.Pizza.description" class="d-block w-100" />
+            <span asp-validation-for="@Model.Pizza.description" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <strong>Link foto:</strong>
+            <input asp-for="@Model.Pizza.fotoLink" class="d-block w-100" />
+            <span asp-validation-for="@Model.Pizza.fotoLink" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <strong>Prezzo:</strong>
+            <input asp-for="@Model.Pizza.prezzo" class="d-block w-100" />
+            <span asp-validation-for="@Model.Pizza.prezzo" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <strong>Categoria:</strong>
+            <select asp-for="Pizza.CategoryId" class="d-block w-100">
+                <option value=""></option>
+                @if(@Model.Categories != null)
+                {
+                    @foreach(Category category in @Model.Categories)
+                    {
+                        @if(Model.Pizza.CategoryId == category.Id)
+                        {
+                            <option value="@category.Id" selected>@category.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    }
+                }
+                
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <strong>Ingredienti:</strong>
+            <select asp-for="@Model.IngredientiSelezionati"
+                multiple="multiple" 
+                size="10" 
+                class="form-control mb-2 mr-sm-2 ml-sm-3 leftlist" 
+                asp-items="@Model.Ingredienti">
+            </select> 
+        </div>
+
+        <div class="text-end">
+        <input type="submit" class="btn btn-small btn-info" value="Salva">
+        </div>
+     </form>
+     <a class="btn-primary rounded-pill py-2 px-4" href="/Pizza/Index">Indietro</a>
+</div>
+
