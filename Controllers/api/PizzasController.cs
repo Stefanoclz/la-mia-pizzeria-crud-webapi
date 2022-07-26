@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace la_mia_pizzeria_static.Controllers.api
 {
-    [Route("Api/[controller]")]
+    [Route("Api/Pizzas")]
     [ApiController]
     public class PizzasController : ControllerBase
     {
@@ -12,9 +12,9 @@ namespace la_mia_pizzeria_static.Controllers.api
         {
             PizzaContext db = new PizzaContext();
 
-            IQueryable<Pizza> pizzas = db.Pizza;
+            List<Pizza> pizzas = db.Pizza.ToList();
 
-            return Ok(pizzas.ToList());
+            return Ok(pizzas);
         }
     }
 }
