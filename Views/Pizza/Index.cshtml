@@ -21,6 +21,8 @@
 </header>
 <body>
     <div class="container text-center">
+        <input class="input-group-text w-100" id="search" placeholder="Inserisci il nome della pizza da cercare" onkeyup="search()"/>
+        <button id="search-btn" class="btn btn-primary">Cerca</button>
         <div id="master" class="row gx-2">
             @*@if(@Model.Count() == 0)
             {
@@ -57,24 +59,62 @@
 </body>
 
 <script TypeText="Javascript">
-                let master = document.getElementById("master");
-                axios.get("Api/Pizzas").then(response => {
-                console.log("PROVA!", response)
-                    if (response.status == 200) {
-                        console.log("LUNGHEZZA", response.data.length)
-                        for (let i = 0; i < response.data.length; i++) {
-                            master.innerHTML += `<div class="col-4 text-center card align-items-center justify-content-center">
-                                                    <img src=${response.data[i].fotoLink} class="w-100 h-50"/>
-                                                    <h2>${response.data[i].name}</h2>
-                                                    <p>${response.data[i].description}</p>
-                                                    <p><strong>Prezzo: </strong>${response.data[i].prezzo} €</p>  
+
+function search() {
+    let value = document.getElementById("search").value;
+    listSearch(value);
+}
+
+listSearch(null);
+
+function listSearch(search) {
+        let master = document.getElementById("master");
+        master.innerHTML = "";
+        axios.get("Api/Pizzas/", {
+            params: {
+                search: search
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                console.log("Prova axios search", response)
+                for (let i = 0; i < response.data.length; i++) {
+                    master.innerHTML += `<div class="col-4 text-center card align-items-center justify-content-center">
+                                            <img src=${response.data[i].fotoLink} class="w-100 h-50"/>
+                                            <h2>${response.data[i].name}</h2>
+                                            <p>${response.data[i].description}</p>
+                                            <p><strong>Prezzo: </strong>${response.data[i].prezzo} €</p>  
                                                          
-                                                    <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Details/${response.data[i].id}">Dettagli</a></button>
-                                                    <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Edit/${response.data[i].id}">Modifica</a></button>
-                                                 </div>`
-                        }
+                                            <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Details/${response.data[i].id}">Dettagli</a></button>
+                                            <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Edit/${response.data[i].id}">Modifica</a></button>
+                                            </div>`
+                }
+            }
+        }).catch(e => {
+            console.log(e)
+        })
+}
+
+
+let master = document.getElementById("master");
+            axios.get("Api/Pizzas").then(response => {
+            console.log("PROVA!", response)
+                if (response.status == 200) {
+                    console.log("LUNGHEZZA", response.data.length)
+                    for (let i = 0; i < response.data.length; i++) {
+                        master.innerHTML += `<div class="col-4 text-center card align-items-center justify-content-center">
+                                                <img src=${response.data[i].fotoLink} class="w-100 h-50"/>
+                                                <h2>${response.data[i].name}</h2>
+                                                <p>${response.data[i].description}</p>
+                                                <p><strong>Prezzo: </strong>${response.data[i].prezzo} €</p>  
+                                                         
+                                                <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Details/${response.data[i].id}">Dettagli</a></button>
+                                                <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Edit/${response.data[i].id}">Modifica</a></button>
+                                                </div>`
                     }
-                }).catch(e => {
-                    console.log(e)
-                })
+                }
+            }).catch(e => {
+                console.log(e)
+            })
+
+                
 </script>
