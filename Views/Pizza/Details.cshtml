@@ -1,7 +1,7 @@
 ﻿@model PizzaCategory
 
-<div class="container text-center my-5">
-    <h1>
+<div id="detail-pizza" class="container text-center my-5">
+    @*<h1>
         @Model.Pizza.name
     </h1>
     @foreach(Category category in @Model.Categories)
@@ -41,7 +41,7 @@
 
             </ul>
         </div>
-    </div>
+    </div>*@
     
     <a class="btn-primary py-2 px-4 rounded-pill" asp-controller="Pizza" asp-action="Index">Indietro</a>
     
@@ -52,3 +52,53 @@
         </button>
     </form>
 </div>
+<script TypeText="Javascript">
+    let detail = document.getElementById("detail-pizza");
+    const id = @Model.Pizza.id;
+    axios.get(`/Api/Pizzas/${id}`).then((response) => {
+            debugger;
+            console.log("Prova axios", response)
+            if (response.status == 200) {
+                console.log("Prova axios", response)
+                let ingredients = "";
+                response.data.ingredientiSelezionati.forEach(ingredient => {
+                    let elem = `<li>${ingredient}</li>`;
+                    ingredients += elem;
+                })
+                detail.innerHTML += `
+                                        <h1>
+                                        ${response.data.pizza.name}
+                                    </h1>
+                                    
+                                        <h3>
+                                            ${response.data.pizza.categoria.name}
+                                        </h3>
+                                    
+                                    <div class="row my-5">
+                                        <div class="col-7">
+                                            <img class="img-pizza" src="${response.data.pizza.fotoLink}" />
+                                        </div>
+                                        <div class="col-5 align-items-center justify-content-center d-flex flex-column bg_grey bg-gradient shadow">
+                                            <h3>
+                                                ${response.data.pizza.description}
+                                            </h3>
+                                            <h5>
+                                                Prezzo: ${response.data.pizza.prezzo}
+                                            </h5>
+                                            <h5>
+                                                Lista Ingredienti:
+                                            </h5>
+                                            <ul>
+                                                
+                                                ${ingredients}
+
+                                            </ul>
+                                        </div>
+                                    </div>  
+                                    `
+                
+            }
+    }).catch(e => {
+        console.log(e)
+    })
+</script>

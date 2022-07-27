@@ -2,18 +2,6 @@
 
 @model List<PizzaCategory>
 
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - la_mia_pizzeria_static</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/la_mia_pizzeria_static.styles.css" asp-append-version="true" />
-</head>
 <header class="row">
     <h3 class="col-12 text-center my-4">
         Benvenuti! Ecco l'elenco delle pizze nel nostro menù'
@@ -70,7 +58,7 @@ listSearch(null);
 function listSearch(search) {
         let master = document.getElementById("master");
         master.innerHTML = "";
-        axios.get("Api/Pizzas/", {
+        axios.get("/Api/Pizzas", {
             params: {
                 search: search
             }
@@ -96,7 +84,7 @@ function listSearch(search) {
 
 
 let master = document.getElementById("master");
-            axios.get("Api/Pizzas").then(response => {
+            axios.get("/Api/Pizzas").then(response => {
             console.log("PROVA!", response)
                 if (response.status == 200) {
                     console.log("LUNGHEZZA", response.data.length)
