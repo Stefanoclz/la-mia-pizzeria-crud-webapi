@@ -1,0 +1,52 @@
+﻿<div>
+    <div class="col-12 mt-5">
+        <h2>Contattaci</h2>
+        <form onsubmit="SendMessage(event)">
+            <div class="mb-3">
+                <label for="contact-email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="contact-email" />
+            </div>
+
+            <div class="mb-3">
+                <label for="contact-name" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="contact-name" />
+            </div>
+
+            <div class="mb-3">
+                <label for="contact-title" class="form-label">Titolo</label>
+                <input type="text" class="form-control" id="contact-title" />
+            </div>
+
+            <div class="mb-3">
+                <label for="contact-text" class="form-label">Testo</label>
+                <textarea type="email" class="form-control" id="contact-text" rows="10"></textarea>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Invia" />
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function SendMessage(e){
+
+        e.preventDefault();
+
+        axios.post('/Api/Messages', {
+            email: document.querySelector('#contact-email').value,
+            name: document.querySelector('#contact-name').value,
+            title: document.querySelector('#contact-title').value,
+            text: document.querySelector('#contact-text').value,
+        })
+            .then(function(response) {
+                document.querySelector('#contact-email').value = '';
+                document.querySelector('#contact-name').value = '';
+                document.querySelector('#contact-title').value = '';
+                document.querySelector('#contact-text').value = '';
+
+                    alert("Messaggio Inviato correttamente!");
+            })
+    }
+
+
+
+</script>
