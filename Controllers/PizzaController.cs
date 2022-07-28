@@ -206,6 +206,14 @@ namespace la_mia_pizzeria_static.Controllers
             }
         }
 
+
+        public IActionResult FeedBack()
+        {
+            
+
+            return View();
+        }
+
         // GET: HomeController1/Delete/5
         /*public ActionResult Delete(int id)
         {
@@ -233,10 +241,5 @@ namespace la_mia_pizzeria_static.Controllers
             }
         }
 
-
-        public IActionResult Contact()
-        {
-            return View();
-        }
     }
 }

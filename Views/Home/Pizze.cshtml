@@ -40,8 +40,8 @@
         </div>
     </div>
     <div class="text-center w-25 m-auto">
-        <a class="btn-primary rounded-pill py-2 px-4 my-5" href="/Pizza/FeedBack">Controlla Feedback</a>
-        <a class="btn-primary rounded-pill py-2 px-4 my-5" href="/Pizza/Create">Crea Nuova Pizza</a>
+        <a class="btn-primary rounded-pill py-2 px-4 my-5" href="/Home/Contact">Contattaci!</a>
+
         <a class="btn-primary px-4 py-2 rounded-pill m-3" href="/Home/Index">Indietro</a>
     </div>
     
@@ -73,8 +73,7 @@ function listSearch(search) {
                                             <p>${response.data[i].description}</p>
                                             <p><strong>Prezzo: </strong>${response.data[i].prezzo} €</p>  
                                                          
-                                            <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Details/${response.data[i].id}">Dettagli</a></button>
-                                            <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Edit/${response.data[i].id}">Modifica</a></button>
+                                            <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Home/Detail/${response.data[i].id}">Dettagli</a></button>
                                             </div>`
                 }
             }
@@ -96,8 +95,7 @@ let master = document.getElementById("master");
                                                 <p>${response.data[i].description}</p>
                                                 <p><strong>Prezzo: </strong>${response.data[i].prezzo} €</p>  
                                                          
-                                                <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Details/${response.data[i].id}">Dettagli</a></button>
-                                                <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="/Pizza/Edit/${response.data[i].id}">Modifica</a></button>
+                                                <button class="btn btn-sm btn-warning my-2"><a class="text-white text-decoration-none" href="Home/Detail/${response.data[i].id}">Dettagli</a></button>
                                                 </div>`
                     }
                 }
@@ -105,5 +103,5 @@ let master = document.getElementById("master");
                 console.log(e)
             })
 
-                
+                s
 </script>

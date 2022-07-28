@@ -13,7 +13,9 @@ namespace la_mia_pizzeria_static.Controllers.api
         {
             PizzaContext db = new PizzaContext();
 
-            List<Pizza> pizzas = db.Pizza.ToList();
+            List<Pizza> pizzas = new List<Pizza>();
+
+            pizzas = db.Pizza.ToList();
 
             if (search != null && search != "")
             {

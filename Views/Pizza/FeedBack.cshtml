@@ -1,0 +1,42 @@
+﻿<div class="container-fluid">
+    <h2>Lista Messaggi Inviati dagli Utenti</h2>
+    <table class="table">
+  <thead>
+    <tr>
+        <th scope="col">#</th>
+      <th scope="col">Nome</th>
+      <th scope="col">Titolo</th>
+      <th scope="col">Testo</th>
+    </tr>
+  </thead>
+  <tbody id="insert">
+    
+    
+  </tbody>
+</table>
+</div>
+
+
+<script type="text/javascript">
+    
+    const insert = document.getElementById("insert");
+
+    axios.get("/Api/Messages").then(response => {
+            console.log("PROVA!", response)
+                if (response.status == 200) {
+                    for (let i = 0; i < response.data.length; i++) {
+                        insert.innerHTML += `
+                                            <tr>
+                                              <th scope="row">${i + 1}</th>
+                                              <td>${response.data[i].name}</td>
+                                              <td>${response.data[i].title}</td>
+                                              <td>${response.data[i].text}</td>
+                                            </tr>
+                                            `
+                    }
+                }
+            }).catch(e => {
+                console.log(e)
+            })
+
+</script>

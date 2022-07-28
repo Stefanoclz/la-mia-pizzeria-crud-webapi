@@ -21,7 +21,19 @@ namespace la_mia_pizzeria_static.Controllers.Api
             _context = context;
         }
 
-        
+
+        [HttpGet]
+        public IActionResult Get()
+        {
+            PizzaContext db = new PizzaContext();
+
+            List<Message> messages = new List<Message>();
+
+            messages = db.Messages.ToList();
+
+            return Ok(messages);
+        }
+
 
         // POST: api/Messages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
