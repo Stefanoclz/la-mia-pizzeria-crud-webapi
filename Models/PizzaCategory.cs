@@ -8,7 +8,7 @@ public class PizzaCategory
     public Pizza Pizza { get; set; }
     public List<Category>? Categories { get; set; }
     public List<SelectListItem>? Ingredienti { get; set; }
-    public List<SelectListItem>? IngredientiSelezionati { get; set; }
+    public List<string>? IngredientiSelezionati { get; set; }
 
     public PizzaCategory()
     {

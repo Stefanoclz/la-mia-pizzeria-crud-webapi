@@ -38,6 +38,7 @@ namespace la_mia_pizzeria_static.Models.Repositories
             using (PizzaContext context = new PizzaContext())
             {
                 Pizza singola = context.Pizza.Where(p => p.id == id).FirstOrDefault();
+                context.Entry(singola).Collection("listaIngredienti").Load();
 
                 return singola;
                 
@@ -54,8 +55,8 @@ namespace la_mia_pizzeria_static.Models.Repositories
 
                 foreach(string ingrItem in ingr)
                 {
-                    Ingrediente ingr = context.Ingrediente.Where(i => i.Name == ingrItem).FirstOrDefault();
-                    listaIngr.Add(ingr);
+                    Ingrediente ingredient = context.Ingrediente.Where(i => i.Name == ingrItem).FirstOrDefault();
+                    listaIngr.Add(ingredient);
                 }
 
                 pizza.listaIngredienti = listaIngr;
@@ -71,16 +72,16 @@ namespace la_mia_pizzeria_static.Models.Repositories
         // POST: HomeController1/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public void Update(Pizza pizza, List<SelectListItem> SelectedIngr)
+        public void Update(Pizza pizza, List<string> Ingredients)
         {
             using(PizzaContext db = new PizzaContext())
             {
 
                 List<Ingrediente> ListaIngr = new List<Ingrediente>();
 
-                foreach(SelectListItem item in SelectedIngr)
+                foreach(string item in Ingredients)
                 {
-                    Ingrediente find = db.Ingrediente.Where(i => i.Id == int.Parse(item.Value)).FirstOrDefault();
+                    Ingrediente find = db.Ingrediente.Where(i => i.Name == item).FirstOrDefault();
                     if(find != null)
                     {
                         ListaIngr.Add(find);

@@ -41,6 +41,7 @@ namespace la_mia_pizzeria_static.Controllers
             using(PizzaContext context = new PizzaContext())
             {
                 Pizza pizzaFound = pizzaRepository.GetById(id);
+                //context.Entry(pizzaFound).Collection("listaIngredienti").Load();
                 if (pizzaFound == null)
                 {
                     return NotFound($"La pizza con id {id} non è stata trovata");
@@ -48,7 +49,7 @@ namespace la_mia_pizzeria_static.Controllers
                 else
                 {
                     PizzaCategory pizzaCat = new PizzaCategory();
-                    context.Entry(pizzaFound).Collection("listaIngredienti").Load();
+                    
                     pizzaCat.Pizza = pizzaFound;
 
                     List<string> listaIngr = new List<string>();
@@ -119,7 +120,7 @@ namespace la_mia_pizzeria_static.Controllers
             pizzaToCreate.name = model.Pizza.name;
             pizzaToCreate.description = model.Pizza.description;
             pizzaToCreate.fotoLink = model.Pizza.fotoLink;
-            pizzaToCreate.CategoryId = model.Pizza.CategoryId
+            pizzaToCreate.CategoryId = model.Pizza.CategoryId;
 
             pizzaRepository.Create(pizzaToCreate, model.IngredientiSelezionati);
             return RedirectToAction("Index");
@@ -145,10 +146,10 @@ namespace la_mia_pizzeria_static.Controllers
                     model.Pizza = pizzaToEdit;
                     model.Categories = categories;
                     List<Ingrediente> ingredients = context.Ingrediente.ToList();
-                    List<SelectListItem> SelectedIngr = new List<SelectListItem>();
+                    List<SelectListItem> IngredientsList = new List<SelectListItem>();
                     foreach (Ingrediente ingr in ingredients)
                     {
-                        listTags.Add(
+                        IngredientsList.Add(
                         new SelectListItem()
                         {
                             Text = ingr.Name,
@@ -157,7 +158,7 @@ namespace la_mia_pizzeria_static.Controllers
                             Selected = pizzaToEdit.listaIngredienti.Any(m => m.Id == ingr.Id)
                         });
                     }
-                    model.IngredientiSelezionati = SelectedIngr;
+                    model.Ingredienti = IngredientsList;
                     return View(model);
                 }
             }
@@ -179,12 +180,12 @@ namespace la_mia_pizzeria_static.Controllers
                     List<Category> categories = context.Category.ToList();
                     model.Categories = categories;
                     List<Ingrediente> ingredients = context.Ingrediente.ToList();
-                    List<SelectListItem> SelectedIngr = new List<SelectListItem>();
+                    List<SelectListItem> IngredientsList = new List<SelectListItem>();
                     foreach (Ingrediente ingr in ingredients)
                     {
-                        SelectedIngr.Add(new SelectListItem() { Text = ingr.Name, Value = ingr.Id.ToString() });
+                        IngredientsList.Add(new SelectListItem() { Text = ingr.Name, Value = ingr.Id.ToString() });
                     }
-                    model.IngredientiSelezionati = SelectedIngr;
+                    model.Ingredienti = IngredientsList;
                     return View("Edit", model);
                 }
             }
@@ -232,4 +233,4 @@ namespace la_mia_pizzeria_static.Controllers
     }
 
 }
-}
+
