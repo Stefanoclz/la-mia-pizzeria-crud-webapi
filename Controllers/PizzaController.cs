@@ -8,130 +8,76 @@ using la_mia_pizzeria_static.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using la_mia_pizzeria_static.Models.Repositories;
 
 namespace la_mia_pizzeria_static.Controllers
 {
+
     [Authorize]
     public class PizzaController : Controller
     {
+
+        private DbPizzaRepository pizzaRepository;
+
         // GET: HomeController1
-        public ActionResult Index()
+
+        public PizzaController()
         {
-            PizzaContext context = new PizzaContext();
-            List<Pizza> listaPizze = context.Pizza.ToList();
-            List<PizzaCategory> listaPizzeCat = new List<PizzaCategory>();
-            foreach (Pizza pizza in listaPizze)
-            {
-                PizzaCategory pizzaCategory = new PizzaCategory();
-                pizzaCategory.Pizza = pizza;
-                pizzaCategory.Categories = context.Category.Where(c => c.Id == pizza.CategoryId).ToList();
-                listaPizzeCat.Add(pizzaCategory);
-            }
-            return View("Index", listaPizzeCat);
+            this.pizzaRepository = new DbPizzaRepository();
         }
 
-        // GET: HomeController1/Details/5
-        public ActionResult Details(int id)
+
+        [HttpGet]
+        public IActionResult Index()
         {
-            
+            List<PizzaCategory> pizze = pizzaRepository.GetList();
+            return View("Index", pizze);
+        }
 
-            using (PizzaContext context = new PizzaContext())
+
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            using(PizzaContext context = new PizzaContext())
             {
-                Pizza singola = context.Pizza.Where(singola => singola.id == id).FirstOrDefault();
-                if(singola == null)
+                Pizza pizzaFound = pizzaRepository.GetById(id);
+                if (pizzaFound == null)
                 {
-                    return NotFound($"La Pizza con id {id} non è stata trovata");
-
+                    return NotFound($"La pizza con id {id} non è stata trovata");
                 }
                 else
                 {
                     PizzaCategory pizzaCat = new PizzaCategory();
-                    context.Entry(singola).Collection("listaIngredienti").Load();
-                    pizzaCat.Pizza = singola;
+                    context.Entry(pizzaFound).Collection("listaIngredienti").Load();
+                    pizzaCat.Pizza = pizzaFound;
 
                     List<string> listaIngr = new List<string>();
 
-                    foreach(Ingrediente str in singola.listaIngredienti)
+                    foreach (Ingrediente str in pizzaFound.listaIngredienti)
                     {
                         listaIngr.Add(str.Name);
                     }
 
                     pizzaCat.IngredientiSelezionati = listaIngr;
 
-                    pizzaCat.Categories = context.Category.Where(c => c.Id == singola.CategoryId).ToList();
-                    return View("Details", pizzaCat);
+                    pizzaCat.Categories = context.Category.Where(c => c.Id == pizzaFound.CategoryId).ToList();
+                    return View(pizzaCat);
                 }
             }
-                    
+            
         }
 
-        // GET: HomeController1/Create
-        public ActionResult Create()
+
+        [HttpGet]
+        public IActionResult Create()
         {
-            using(PizzaContext context = new PizzaContext())
+            using (PizzaContext context = new PizzaContext())
             {
                 List<Category> categories = context.Category.ToList();
                 List<Ingrediente> ingredienti = context.Ingrediente.ToList();
                 PizzaCategory model = new PizzaCategory();
                 model.Categories = categories;
                 model.Pizza = new Pizza();
-
-                List<SelectListItem> ingredientiList = new List<SelectListItem>();
-
-                foreach(Ingrediente ingrediente in ingredienti)
-                {
-                    ingredientiList.Add(new SelectListItem() { Text = ingrediente.Name, Value = ingrediente.Id.ToString() });
-                }
-
-                model.Ingredienti = ingredientiList;
-
-                return View(model);
-            }
-        }
-
-        // POST: HomeController1/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [MoreThanFiveWordsValidationAttribute]
-        public ActionResult Create(PizzaCategory model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            using (PizzaContext db = new PizzaContext())
-            {
-                List<Ingrediente> listaIngr = new List<Ingrediente>();
-
-                foreach(string str in model.IngredientiSelezionati)
-                {
-                    listaIngr.Add(db.Ingrediente.Where(ingr => ingr.Id == int.Parse(str)).First());
-                }
-
-                model.Pizza.listaIngredienti = listaIngr;
-                db.Pizza.Add(model.Pizza);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-        }
-
-        // GET: HomeController1/Edit/5
-        public ActionResult Edit(int id)
-        {
-            using(PizzaContext context = new PizzaContext())
-            {
-                Pizza modify = context.Pizza.Where(p => p.id == id).Include(p => p.listaIngredienti).FirstOrDefault();
-                if(modify == null)
-                {
-                    return NotFound();
-                }
-
-                List<Category> categorie = context.Category.ToList();
-                List<Ingrediente> ingredienti = context.Ingrediente.ToList();
-                PizzaCategory model = new PizzaCategory();
-                model.Pizza = modify;
-                model.Categories = categorie;
 
                 List<SelectListItem> ingredientiList = new List<SelectListItem>();
 
@@ -142,104 +88,148 @@ namespace la_mia_pizzeria_static.Controllers
 
                 model.Ingredienti = ingredientiList;
 
-                model.IngredientiSelezionati = new List<string>();
-
-                foreach(Ingrediente ingr in modify.listaIngredienti)
-                {
-                    model.IngredientiSelezionati.Add(ingr.Id.ToString());
-                }
-
                 return View(model);
-         
             }
         }
 
-        // POST: HomeController1/Edit/5
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [MoreThanFiveWordsValidationAttribute]
+        public ActionResult Create(PizzaCategory model)
+        {
+            if (!ModelState.IsValid)
+            {
+                using (PizzaContext db = new PizzaContext())
+                {
+                    List<Ingrediente> listaIngr = new List<Ingrediente>();
+
+                    foreach (string str in model.IngredientiSelezionati)
+                    {
+                        listaIngr.Add(db.Ingrediente.Where(ingr => ingr.Id == int.Parse(str)).First());
+                    }
+
+                    model.Pizza.listaIngredienti = listaIngr;
+                    return View("Create", model);
+                }
+                    
+            }
+
+            Pizza pizzaToCreate = new Pizza();
+            pizzaToCreate.name = model.Pizza.name;
+            pizzaToCreate.description = model.Pizza.description;
+            pizzaToCreate.fotoLink = model.Pizza.fotoLink;
+            pizzaToCreate.CategoryId = model.Pizza.CategoryId
+
+            pizzaRepository.Create(pizzaToCreate, model.IngredientiSelezionati);
+            return RedirectToAction("Index");
+
+        }
+
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            using (PizzaContext context = new PizzaContext())
+            {
+                // aggiungiamo include perchè vogliamo caricare anche i Tag del Post
+                Pizza pizzaToEdit = pizzaRepository.GetById(id);
+                if (pizzaToEdit == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    List<Category> categories = context.Category.ToList();
+                    PizzaCategory model = new PizzaCategory();
+                    model.Pizza = pizzaToEdit;
+                    model.Categories = categories;
+                    List<Ingrediente> ingredients = context.Ingrediente.ToList();
+                    List<SelectListItem> SelectedIngr = new List<SelectListItem>();
+                    foreach (Ingrediente ingr in ingredients)
+                    {
+                        listTags.Add(
+                        new SelectListItem()
+                        {
+                            Text = ingr.Name,
+                            Value = ingr.Id.ToString(),
+                            // dobbiamo settare come selezionati i tag che sono presenti nel Post
+                            Selected = pizzaToEdit.listaIngredienti.Any(m => m.Id == ingr.Id)
+                        });
+                    }
+                    model.IngredientiSelezionati = SelectedIngr;
+                    return View(model);
+                }
+            }
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PizzaCategory model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
-            }
-
-            using (PizzaContext context = new PizzaContext())
-            {
-                Pizza modify = context.Pizza.Where(p => p.id == id).Include(p => p.listaIngredienti).FirstOrDefault();
-                if (modify != null)
+                using (PizzaContext context = new PizzaContext())
                 {
-                    //pizza.Pizza = modify;
-                    
-                    modify.name = model.Pizza.name;
-                    modify.description = model.Pizza.description;
-                    modify.fotoLink = model.Pizza.fotoLink;
-                    modify.prezzo = model.Pizza.prezzo;
-                    modify.CategoryId = model.Pizza.CategoryId;
-
-                    List<Ingrediente> listaIngr = new List<Ingrediente>();
-
-                    
-
-                    modify.listaIngredienti.Clear();
-
-                    if(model.IngredientiSelezionati != null)
+                    // In caso di errore di validazione dobbiamo restituire ogni volta il model
+                    // popolato con la lista delle categorie, perchè questi dati non vengono
+                    // passati dal post e restituendolo direttamente la property Categories
+                    // sarebbe null e la pagina darebbe errore
+                    List<Category> categories = context.Category.ToList();
+                    model.Categories = categories;
+                    List<Ingrediente> ingredients = context.Ingrediente.ToList();
+                    List<SelectListItem> SelectedIngr = new List<SelectListItem>();
+                    foreach (Ingrediente ingr in ingredients)
                     {
-                        foreach (string str in model.IngredientiSelezionati)
-                        {
-                            int selectId = int.Parse(str);
-                            Ingrediente ingrediente = context.Ingrediente.Where(ingr => ingr.Id == selectId).First();
-                            modify.listaIngredienti.Add(ingrediente);
-                        }
+                        SelectedIngr.Add(new SelectListItem() { Text = ingr.Name, Value = ingr.Id.ToString() });
                     }
-
-
-                    context.Update(modify);
-                    context.SaveChanges();
+                    model.IngredientiSelezionati = SelectedIngr;
+                    return View("Edit", model);
                 }
-                else
-                {
-                    return NotFound();
-                }
-
+            }
+            // dobbiamo caricare anche i Tag collegati al post
+            Pizza pizzaToEdit = pizzaRepository.GetById(id);
+            if (pizzaToEdit != null)
+            {
+                // aggiorniamo i campi con i nuovi valori
+                pizzaToEdit.name = model.Pizza.name;
+                pizzaToEdit.description = model.Pizza.description;
+                pizzaToEdit.fotoLink = model.Pizza.fotoLink;
+                pizzaToEdit.CategoryId = model.Pizza.CategoryId;
+                pizzaRepository.Update(pizzaToEdit, model.IngredientiSelezionati);
                 return RedirectToAction("Index");
             }
+            else
+            {
+                return NotFound();
+            }
         }
-
 
         public IActionResult FeedBack()
         {
-            
+
 
             return View();
         }
 
-        // GET: HomeController1/Delete/5
-        /*public ActionResult Delete(int id)
-        {
-            return View();
-        }*/
 
-        // POST: HomeController1/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id)
+        public IActionResult Delete(int id)
         {
-            using (PizzaContext context = new PizzaContext())
+            Pizza pizzaToDelete = pizzaRepository.GetById(id);
+            if (pizzaToDelete != null)
             {
-                Pizza erase = context.Pizza.Where(p => p.id == id).FirstOrDefault();
-
-                if (erase == null)
-                {
-                    return NotFound();
-                }
-               
-                context.Pizza.Remove(erase);
-                context.SaveChanges();
+                pizzaRepository.Delete(pizzaToDelete);
                 return RedirectToAction("Index");
-                
+            }
+            else
+            {
+                return NotFound();
             }
         }
-
     }
+
+}
 }
