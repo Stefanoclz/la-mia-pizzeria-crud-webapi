@@ -46,7 +46,8 @@ namespace la_mia_pizzeria_static.Models.Repositories
 
         }
 
-        // GET: HomeController1/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public void Create(Pizza pizza, List<string> ingr)
         {
             using(PizzaContext context = new PizzaContext())
@@ -55,7 +56,7 @@ namespace la_mia_pizzeria_static.Models.Repositories
 
                 foreach(string ingrItem in ingr)
                 {
-                    Ingrediente ingredient = context.Ingrediente.Where(i => i.Name == ingrItem).FirstOrDefault();
+                    Ingrediente ingredient = context.Ingrediente.Where(i => i.Id == int.Parse(ingrItem)).FirstOrDefault();
                     listaIngr.Add(ingredient);
                 }
 

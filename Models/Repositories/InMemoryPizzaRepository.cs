@@ -58,9 +58,19 @@ namespace la_mia_pizzeria_static.Models.Repositories
 
 
 
-        public List<Pizza> GetList()
+        public List<PizzaCategory> GetList()
         {
-            return InMemoryPizzaRepository.Pizze;
+            PizzaContext context = new PizzaContext();
+            List<Pizza> listaPizze = context.Pizza.ToList();
+            List<PizzaCategory> listaPizzeCat = new List<PizzaCategory>();
+            foreach (Pizza pizza in listaPizze)
+            {
+                PizzaCategory pizzaCategory = new PizzaCategory();
+                pizzaCategory.Pizza = pizza;
+                pizzaCategory.Categories = context.Category.Where(c => c.Id == pizza.CategoryId).ToList();
+                listaPizzeCat.Add(pizzaCategory);
+            }
+            return listaPizzeCat;
         }
 
 

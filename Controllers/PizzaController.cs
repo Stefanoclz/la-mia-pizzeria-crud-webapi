@@ -119,6 +119,7 @@ namespace la_mia_pizzeria_static.Controllers
             Pizza pizzaToCreate = new Pizza();
             pizzaToCreate.name = model.Pizza.name;
             pizzaToCreate.description = model.Pizza.description;
+            pizzaToCreate.prezzo = model.Pizza.prezzo;
             pizzaToCreate.fotoLink = model.Pizza.fotoLink;
             pizzaToCreate.CategoryId = model.Pizza.CategoryId;
 
@@ -196,6 +197,7 @@ namespace la_mia_pizzeria_static.Controllers
                 // aggiorniamo i campi con i nuovi valori
                 pizzaToEdit.name = model.Pizza.name;
                 pizzaToEdit.description = model.Pizza.description;
+                pizzaToEdit.prezzo = model.Pizza.prezzo;
                 pizzaToEdit.fotoLink = model.Pizza.fotoLink;
                 pizzaToEdit.CategoryId = model.Pizza.CategoryId;
                 pizzaRepository.Update(pizzaToEdit, model.IngredientiSelezionati);
