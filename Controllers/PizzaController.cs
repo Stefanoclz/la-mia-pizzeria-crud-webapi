@@ -17,13 +17,13 @@ namespace la_mia_pizzeria_static.Controllers
     public class PizzaController : Controller
     {
 
-        private DbPizzaRepository pizzaRepository;
+        private InMemoryPizzaRepository pizzaRepository;
 
         // GET: HomeController1
 
         public PizzaController()
         {
-            this.pizzaRepository = new DbPizzaRepository();
+            this.pizzaRepository = new InMemoryPizzaRepository();
         }
 
 

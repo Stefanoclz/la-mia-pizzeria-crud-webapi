@@ -17,21 +17,32 @@ namespace la_mia_pizzeria_static.Models.Repositories
 {
     public class InMemoryPizzaRepository
     {
-        private static List<Pizza> Pizze = new List<Pizza>();
+        private static List<PizzaCategory> Pizze = new List<PizzaCategory>();
         public void Create(Pizza pizza, List<string> selectedIngr)
         {
             pizza.id = Pizze.Count;
-            // diciamo che per semplicità tag e categorie non le gestiamo
+            
             pizza.listaIngredienti = new List<Ingrediente>();
 
-            InMemoryPizzaRepository.Pizze.Add(pizza);
+            foreach(string ingr in selectedIngr)
+            {
+                Ingrediente nuovo = new Ingrediente();
+                nuovo.Name = ingr;
+                pizza.listaIngredienti.Add(nuovo);
+            }
+
+            PizzaCategory pizzaCat = new PizzaCategory();
+            pizzaCat.Pizza = pizza;
+
+            InMemoryPizzaRepository.Pizze.Add(pizzaCat);
         }
+
         public void Delete(Pizza pizza)
         {
             int indicePostDaEliminare = -1;
             for (int i = 0; i < InMemoryPizzaRepository.Pizze.Count; i++)
             {
-                Pizza pizzaToCheck = InMemoryPizzaRepository.Pizze[i];
+                Pizza pizzaToCheck = InMemoryPizzaRepository.Pizze[i].Pizza;
                 if (pizzaToCheck.id == pizza.id)
                 {
                     indicePostDaEliminare = i;
@@ -42,7 +53,8 @@ namespace la_mia_pizzeria_static.Models.Repositories
                 InMemoryPizzaRepository.Pizze.RemoveAt(indicePostDaEliminare);
             }
         }
-        public Pizza GetById(int id)
+
+        public PizzaCategory GetById(int id)
         {
             Pizza pizzaDaTrovare = null;
             for (int i = 0; i < InMemoryPizzaRepository.Pizze.Count; i++)
@@ -60,17 +72,7 @@ namespace la_mia_pizzeria_static.Models.Repositories
 
         public List<PizzaCategory> GetList()
         {
-            PizzaContext context = new PizzaContext();
-            List<Pizza> listaPizze = context.Pizza.ToList();
-            List<PizzaCategory> listaPizzeCat = new List<PizzaCategory>();
-            foreach (Pizza pizza in listaPizze)
-            {
-                PizzaCategory pizzaCategory = new PizzaCategory();
-                pizzaCategory.Pizza = pizza;
-                pizzaCategory.Categories = context.Category.Where(c => c.Id == pizza.CategoryId).ToList();
-                listaPizzeCat.Add(pizzaCategory);
-            }
-            return listaPizzeCat;
+            return InMemoryPizzaRepository.Pizze;
         }
 
 
